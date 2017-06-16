@@ -1,3 +1,6 @@
+import codecs
+import json
+import os
 
 class MyMongoDBInstance():
 
@@ -24,11 +27,9 @@ class MyMongoDBInstance():
 class MyFileSaveOption():
     def __init__(self):
         print('To save at files')
-        import codecs
-        import json
-        import os
 
     def save(self,data,file_name):
+        file_name += '.json'
         with codecs.open(file_name, encoding='utf-8', mode='a') as file:
             for d in data:
                 file.write(self.dict_to_json(d))
