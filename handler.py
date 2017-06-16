@@ -10,6 +10,7 @@ class Handler():
         self.parser = XMLParser()
     
     def start(self):
+        print('start at: '+self.startFolder)
         self.file_handler(self.startFolder)
 
     def write(file, nivel):
@@ -24,7 +25,7 @@ class Handler():
             elif(os.path.isdir(f)):
                 new_folder = os.path.join(os.getcwd(), f)
                 self.file_handler(new_folder)
-                os.chdir(new_folder)
+                os.chdir(folder)
 
 if __name__ == "__main__":
     h = Handler()
