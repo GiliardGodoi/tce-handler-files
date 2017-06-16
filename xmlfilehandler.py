@@ -1,6 +1,5 @@
 from validators import Validator
-# from db import MyMongoDBInstance as DB
-from db import MyFileSaveOption as DB
+
 
 class Construtor():
     def criar(self, tipo):
@@ -11,6 +10,7 @@ class Construtor():
          'Contrato' : ContratoValidator, 'ContratoAditivo' : ContratoAditivoValidator,
          'ContratoAditivoCessao' : ContratoAditivoCessaoValidator, 'ContratoAditivoPrazo' : ContratoAditivoPrazoValidator,
          'ContratoAditivoRedimensionamen' : ContratoAditivoRedimensionamenValidator,
+         'ContratoAditivoSubContratacao' : ContratoAditivoSubContratacaoValidator,
          'ContratoAditivoRescisao' : ContratoAditivoRescisaoValidator,
          'Licitacao' : LicitacaoValidator, 'LicitacaoParticipante' : LicitacaoParticipanteValidator,
          'LicitacaoVencedor' : LicitacaoVencedorValidator
@@ -25,70 +25,77 @@ class EmpenhoValidator(Validator):
     def __init__(self):
         super().__init__()
         self.floatFields = [ "vlEmpenho", "vlSaldoAntDotacao", "vlLiquidacao", "vlPagamento" ]
-        self.intFields = []
-        self.db = DB()
-        
-    def valide(self, data):
-        print('validando empenho')
-    
-    def save(self,data):
-        pass
+        self.collection_name = 'rawEmpenho'
 
 class EmpenhoLiquidacaoValidator(Validator):
     def __init__(self):
         super().__init__()
         self.floatFields = ["vlLiquidacaoBruto", "vlLiquidacaoEstornado", "vlLiquidacaoLiquido"]
+        self.collection_name = 'rawEmpenhoLiquidacao'
 
 class EmpenhoLiquidacaoEstornoValidator(Validator):
     def __init__(self):
         super().__init__()
         self.floatFields = ["vlEstorno"]
+        self.collection_name = 'rawEmpenhoLiquidacaoEstorno'
     
 class EmpenhoLiquidacaoDocumentoFiscValidator(Validator):
     def __init__(self):
         super().__init__()
         self.floatFields = ["vlDocumento"]
+        self.collection_name = 'rawEmpenhoLiquidacaoDocumentoFisc'
 
 class EmpenhoPagamentoValidator(Validator):
     def __init__(self):
         super().__init__()
         self.floatFields = ["vlOperacao", "vlPagamentoBruto", "vlPagamentoEstornado", "vlPagamentoLiquido"]
+        self.collection_name = 'rawEmpenhoPagamento'
 
 class EmpenhoPagamentoEstornoValidator(Validator):
     def __init__(self):
         super().__init__()
         self.floatFields = ["vlEstorno"]
+        self.collection_name = 'rawEmpenhoPagamentoEstorno'
 
 class ContratoValidator(Validator):
     def __init__(self):
         super().__init__()
         self.floatFields = ["vlContrato", "vlDesteContratado"]
+        self.collection_name = 'rawContrato'
 
 class ContratoAditivoValidator(Validator):
     def __init__(self):
         super().__init__()
         self.floatFields = ["vlAditivo", "vlAtualizadoContrato"]
+        self.collection_name = 'rawContratoAditivo'
 
 
 class ContratoAditivoCessaoValidator(Validator):
     def __init__(self):
         super().__init__()
+        self.collection_name = 'rawContratoAditivoCessao'
 
 class ContratoAditivoPrazoValidator(Validator):
     def __init__(self):
         super().__init__()
+        self.collection_name = 'rawContratoAditivoPrazo'
 
 class ContratoAditivoRedimensionamenValidator(Validator):
     def __init__(self):
         super().__init__()
         self.floatFields = ['nrQuantidade','vlAditivoItem']
+        self.collection_name = 'rawContratoAditivoRedimensionamen'
 
 class ContratoAditivoRescisaoValidator(Validator):
     def __init__(self):
         super().__init__()
+        self.collection_name = 'rawContratoAditivoRescisao'
+
+class ContratoAditivoSubContratacaoValidator(Validator):
+    def __init__(self):
+        super().__init__()
+        self.collection_name = 'rawContratoAditivoSubContratacao'
         
-
-
 class LicitacaoValidator(Validator):
     def __init__(self):
         super().__init__()
@@ -102,13 +109,12 @@ class LicitacaoValidator(Validator):
                     "nrQuantidadeVencedorLicitacao",
                     "vlLicitacaoVencedorLicitacao" ]
         self.schema = {'nranoEditalOrigem' : 'nrAnoEditalOrigem'}
-
-    def valide(self, data):
-        print('validando licitacao')
+        self.collection_name = 'rawLicitacao'
         
 class LicitacaoParticipanteValidator(Validator):
     def __init__(self):
         super().__init__()
+        self.collection_name = 'rawLicitacaoParticipante'
 
 class LicitacaoVencedorValidator(Validator):
     def __init__(self):
@@ -116,14 +122,35 @@ class LicitacaoVencedorValidator(Validator):
         self.floatFields = ["nrQuantidade" , "vlMinimoUnitarioItem", "vlMinimoTotal", "vlMaximoUnitarioitem",
         "vlMaximoTotal", "nrPrazoLimiteEntrega", "nrQuantidadePropostaLicitacao", "vlPropostaItem",
         "nrQuantidadeVencedorLicitacao", "vlLicitacaoVencedorLicitacao"]
+        self.collection_name = 'rawLicitacaoVencedor'
 
 class ConvenioValidator(Validator):
     def __init__(self):
         super().__init__()
-    
-    def valide(self, data):
-        print('validando convenio')
+        self.floatFields = ["vlRecursoProprio", "vlConvenio"]
+        self.collection_name = 'rawConvenio'
 
-class RelacionamentoValidator(Validator):
+class ContratoXConvenioValidator(Validator):
     def __init__(self):
         super().__init__()
+        self.collection_name = 'rawContratoXConvenio'
+
+class EmpenhoXContratoValidator(Validator):
+    def __init__(self):
+        super().__init__()
+        self.collection_name = 'rawEmpenhoXContrato'
+
+class LicitacaoXContrato(Validator):
+    def __init__(self):
+        super().__init__()
+        self.collection_name = 'rawLicitacaoXContrato'
+
+class LicitacaoXConvenioValidator(Validator):
+    def __init__(self):
+        super().__init__()
+        self.collection_name = 'rawLicitacaoXConvenio'
+
+class LicitacaoXEmpenhoValidator(Validator):
+    def __init__(self):
+        super().__init__()
+        self.collection_name = 'rawLicitacaoXEmpenho'
