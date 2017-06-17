@@ -10,12 +10,17 @@ class Validator():
         self.floatFields = []
         self.schema = []
     
+    def __repr__(self):
+        return self.__class__.__name__
+    
     def valide(self, registro):
         novo = {}
         for chave in list(registro.keys()):
             if type(registro[chave]) is str :
                 novo[chave] = registro[chave].strip()
-            if chave in self.floatFields :
+
+        for chave in self.floatFields:
+            if chave in registro :
                 novo[chave] = self._convert_to_decimal(registro[chave])
         return novo
 
