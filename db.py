@@ -17,12 +17,18 @@ class MyMongoDBInstance():
 
     def save(self, data, collection = ''):
         db = self.get_db()
+        result = None
         if collection in self.collections :
-            db.collection.insert_many(data, ordered=False)
+            result = db.collection.insert_many(data, ordered=False)
         else :
             print('criando colecao: ',collection)
-            db.collection.insert_many(data, ordered=False)
+            result = db.collection.insert_many(data, ordered=False)
         # return db.insert_many(data,ordered=False)
+        if result :
+            result['inserted_lenght'] = len(result.inserted_ids)
+            return result
+        else :
+            return None
     
 class MyFileSaveOption():
     def __init__(self):
