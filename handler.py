@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import os
 import stdio
 from xmlparser import XMLParser
