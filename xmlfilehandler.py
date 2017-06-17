@@ -68,33 +68,60 @@ class ContratoAditivoValidator(Validator):
         super().__init__()
         self.floatFields = ["vlAditivo", "vlAtualizadoContrato"]
         self.collection_name = 'rawContratoAditivo'
-
-
+        self.schema = [{"old" : "idcontrato", "new" : "idContrato"}]
+    
+    def valide(self, registro):
+        novo = super().valide(registro)
+        return super()._ensure_schema_names(novo)
+        
 class ContratoAditivoCessaoValidator(Validator):
     def __init__(self):
         super().__init__()
         self.collection_name = 'rawContratoAditivoCessao'
+        self.schema = [{"old" : "idcontrato", "new" : "idContrato"}]
+    
+    def valide(self, registro):
+        novo = super().valide(registro)
+        return super()._ensure_schema_names(novo)
 
 class ContratoAditivoPrazoValidator(Validator):
     def __init__(self):
         super().__init__()
         self.collection_name = 'rawContratoAditivoPrazo'
+        self.schema = [{"old" : "idcontrato", "new" : "idContrato"}]
+
+    def valide(self, registro):
+        novo = super().valide(registro)
+        return super()._ensure_schema_names(novo)
 
 class ContratoAditivoRedimensionamenValidator(Validator):
     def __init__(self):
         super().__init__()
         self.floatFields = ['nrQuantidade','vlAditivoItem']
         self.collection_name = 'rawContratoAditivoRedimensionamen'
+        self.schema = [{"old" : "idcontrato", "new" : "idContrato"}]
+    
+    def valide(self, registro):
+        novo = super().valide(registro)
+        return super()._ensure_schema_names(novo)
 
 class ContratoAditivoRescisaoValidator(Validator):
     def __init__(self):
         super().__init__()
         self.collection_name = 'rawContratoAditivoRescisao'
+    
+    def valide(self, registro):
+        novo = super().valide(registro)
+        return super()._ensure_schema_names(novo)
 
 class ContratoAditivoSubContratacaoValidator(Validator):
     def __init__(self):
         super().__init__()
         self.collection_name = 'rawContratoAditivoSubContratacao'
+    
+    def valide(self, registro):
+        novo = super().valide(registro)
+        return super()._ensure_schema_names(novo)
         
 class LicitacaoValidator(Validator):
     def __init__(self):
@@ -108,9 +135,14 @@ class LicitacaoValidator(Validator):
                     "vlPropostaItem",
                     "nrQuantidadeVencedorLicitacao",
                     "vlLicitacaoVencedorLicitacao" ]
-        self.schema = {'nranoEditalOrigem' : 'nrAnoEditalOrigem'}
+        self.schema = [{ 'old' : 'nranoEditalOrigem' , 'new' : 'nrAnoEditalOrigem'}]
         self.collection_name = 'rawLicitacao'
+    
+    def valide(self, registro):
+        novo = super().valide(registro)
+        return super()._ensure_schema_names(novo)
         
+            
 class LicitacaoParticipanteValidator(Validator):
     def __init__(self):
         super().__init__()

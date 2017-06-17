@@ -60,4 +60,10 @@ class Validator():
         # else:
         #     return value
         return self._to_decimal(value)
-
+    
+    def _ensure_schema_names(self, registro):
+        for obj in self.schema :
+            if obj['old'] in registro:
+                registro[obj['new']] = registro[obj['old']]
+                del registro[obj['old']]
+        return registro
