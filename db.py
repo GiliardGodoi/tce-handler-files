@@ -4,7 +4,7 @@ import os
 
 class MyMongoDBInstance():
 
-    def __init__(self, db_name = 'teste'):
+    def __init__(self, db_name = 'public_data'):
         self.db_name = db_name
         self.collections = []
     
@@ -15,17 +15,18 @@ class MyMongoDBInstance():
         self.collections = db.collection_names()
         return db
 
-    def save(self, data, collection = ''):
+    def save(self, data, collection = None):
         db = self.get_db()
         result = None
         if collection in self.collections :
-            result = db.collection.insert_many(data, ordered=False)
+            result = db[collection].insert_many(data, ordered=False)
         else :
             print('criando colecao: ',collection)
-            result = db.collection.insert_many(data, ordered=False)
+            insert_result = db[collection].insert_many(data, ordered=False)
         # return db.insert_many(data,ordered=False)
-        if result :
-            result['inserted_lenght'] = len(result.inserted_ids)
+        if insert_result :
+            result['inserted_lenght'] = len(insert_result.inserted_ids) #TypeError: 'InsertManyResult' object does not support item assignment
+            result['inserted_ids'] = insert_result.inserted_ids
             return result
         else :
             return None
