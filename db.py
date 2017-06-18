@@ -17,7 +17,8 @@ class MyMongoDBInstance():
 
     def save(self, data, collection = None):
         db = self.get_db()
-        result = None
+        result = {}
+        insert_result = None
         if collection in self.collections :
             result = db[collection].insert_many(data, ordered=False)
         else :

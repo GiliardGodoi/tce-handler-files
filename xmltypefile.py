@@ -13,7 +13,10 @@ class Construtor():
          'ContratoAditivoSubContratacao' : ContratoAditivoSubContratacaoValidator,
          'ContratoAditivoRescisao' : ContratoAditivoRescisaoValidator,
          'Licitacao' : LicitacaoValidator, 'LicitacaoParticipante' : LicitacaoParticipanteValidator,
-         'LicitacaoVencedor' : LicitacaoVencedorValidator
+         'LicitacaoVencedor' : LicitacaoVencedorValidator,
+         'ContratoXConvenio' : ContratoXConvenioValidator,
+         'EmpenhoXContrato' : EmpenhoXContratoValidator, 'LicitacaoXContrato':LicitacaoXContratoValidator,
+         'LicitacaoXConvenio' : LicitacaoXConvenioValidator, 'LicitacaoXEmpenho' :LicitacaoXEmpenhoValidator
         }
         if tipo in tiposArquivos:
             return tiposArquivos[tipo]()
@@ -180,7 +183,7 @@ class EmpenhoXContratoValidator(Validator):
         super().__init__()
         self.collection_name = 'rawEmpenhoXContrato'
 
-class LicitacaoXContrato(Validator):
+class LicitacaoXContratoValidator(Validator):
     def __init__(self):
         super().__init__()
         self.collection_name = 'rawLicitacaoXContrato'

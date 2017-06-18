@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-from xmlfilehandler import Construtor
+from xmltypefile import Construtor
 
 class XMLParser():
     def __init__(self):
