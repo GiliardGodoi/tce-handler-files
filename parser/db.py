@@ -1,8 +1,9 @@
 import codecs
 import json
+import csv
 import os
 
-class MyMongoDBInstance():
+class MongoStorage():
 
     def __init__(self, db_name = 'public_data'):
         self.db_name = db_name
@@ -32,10 +33,8 @@ class MyMongoDBInstance():
         else :
             return None
     
-class MyFileSaveOption():
-    def __init__(self):
-        print('To save at files')
-
+class FileJSONStorage():
+            
     def save(self,data,file_name):
         file_name += '.json'
         with codecs.open(file_name, encoding='utf-8', mode='a') as file:
@@ -45,3 +44,22 @@ class MyFileSaveOption():
     
     def dict_to_json(self,dict_data):
         return json.JSONEncoder(ensure_ascii=False,indent=2).encode(dict_data)
+
+class FileCSVStorage():
+    def save(self, data, file_name):
+        file_name += '.csv'
+        field_names = self.define_header(data)
+        with open(file_name,'w') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=field_names)
+            writer.writeheader()
+            writer.writerows(data)
+    
+    def define_header(self, data):
+        if type(data) is list:
+            if len(data) > 0 :
+                d = data[0]
+                return list(d.keys())
+            else : 
+                return []
+        elif type(data) is dict :
+                return list(data.keys())

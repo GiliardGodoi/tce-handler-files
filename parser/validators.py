@@ -1,6 +1,7 @@
 import re
-from db import MyMongoDBInstance as DB
-# from db import MyFileSaveOption as DB
+# from db import MongoStorage as DB
+# from db import FileJSONStorage as DB
+from db import FileCSVStorage as DB
 
 class Validator():
     def __init__(self):
