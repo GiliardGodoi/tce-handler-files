@@ -55,11 +55,12 @@ class FileCSVStorage():
             writer.writerows(data)
     
     def define_header(self, data):
+        conjunto = set()
         if type(data) is list:
-            if len(data) > 0 :
-                d = data[0]
-                return list(d.keys())
-            else : 
-                return []
+            for reg in data:
+                ls = list(reg.keys())
+                for e in ls:
+                    conjunto.add(e)
+            return list(conjunto)
         elif type(data) is dict :
                 return list(data.keys())
