@@ -61,6 +61,34 @@ class FileCSVStorage():
                 ls = list(reg.keys())
                 for e in ls:
                     conjunto.add(e)
-            return list(conjunto)
+            ls = list(conjunto)
+            ls.sort()
+            return ls
         elif type(data) is dict :
                 return list(data.keys())
+
+class StorageFactory(object):
+    def __init__(self):
+        self.storages = {'mongo' : MongoStorage, 'csv' : FileCSVStorage, 'json' : FileJSONStorage}
+        self.instance = None
+
+    def get_storage(self, storage_name = '') :
+        '''
+            Tentativa de implementar um singleton com factory method. Vc pode instanciar duas classes de um mesmo storage utilizando o seguinte artificio:
+            instancia primeiro de um tipo e depois de outro. quando for instanciar o terceiro - que será do mesmo tipo do primeiro - uma nova instancia deste
+            primeiro sera retornada. Mas isso se deve como o python gerencia as suas variaveis
+        '''
+        if storage_name in self.storages :
+            if not self.instance :
+                self.instance = self.storages[storage_name]()
+                return self.instance
+            elif not type(self.instance) is self.storages[storage_name]:
+                self.instance = self.storages[storage_name]()
+                return self.instance
+            else:
+                return self.instance           
+        else:
+            raise AttributeError('Storage name is not defined')
+    
+    def _print(self,name = 'printar'):
+        print(name)
