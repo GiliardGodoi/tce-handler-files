@@ -50,9 +50,12 @@ class FileCSVStorage():
         file_name += '.csv'
         field_names = self.define_header(data)
         with open(file_name,'w') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=field_names)
-            writer.writeheader()
-            writer.writerows(data)
+            try:
+                writer = csv.DictWriter(csvfile, fieldnames=field_names)
+                writer.writeheader()
+                writer.writerows(data)
+            except Exception as error:
+                raise error
     
     def define_header(self, data):
         conjunto = set()
@@ -67,28 +70,42 @@ class FileCSVStorage():
         elif type(data) is dict :
                 return list(data.keys())
 
-class StorageFactory(object):
+class SingletonMongo():
     def __init__(self):
-        self.storages = {'mongo' : MongoStorage, 'csv' : FileCSVStorage, 'json' : FileJSONStorage}
         self.instance = None
 
+    def get_instance(self):
+        if not self.instance:
+            self.instance = MongoStorage()
+        return self.instance
+
+class SingletonCSVStorage():
+    def __init__(self):
+        self.instance = None
+    
+    def get_instance(self):
+        if not self.instance :
+            self.instance = FileCSVStorage()
+        return self.instance
+
+class SingletonJSONStorage():
+    def __init__(self):
+        self.instance = None
+    
+    def get_instance(self):
+        if not self.instance:
+            self.instance = FileJSONStorage()
+        return self.instance
+
+class StorageFactory(object):
+    def __init__(self):
+        self.storages = {}
+        self.storages['mongo'] = SingletonMongo()
+        self.storages['csv'] = SingletonCSVStorage()
+        self.storages['json'] = SingletonJSONStorage()
+
     def get_storage(self, storage_name = '') :
-        '''
-            Tentativa de implementar um singleton com factory method. Vc pode instanciar duas classes de um mesmo storage utilizando o seguinte artificio:
-            instancia primeiro de um tipo e depois de outro. quando for instanciar o terceiro - que será do mesmo tipo do primeiro - uma nova instancia deste
-            primeiro sera retornada. Mas isso se deve como o python gerencia as suas variaveis
-        '''
         if storage_name in self.storages :
-            if not self.instance :
-                self.instance = self.storages[storage_name]()
-                return self.instance
-            elif not type(self.instance) is self.storages[storage_name]:
-                self.instance = self.storages[storage_name]()
-                return self.instance
-            else:
-                return self.instance           
+            return self.storages[storage_name].get_instance()
         else:
             raise AttributeError('Storage name is not defined')
-    
-    def _print(self,name = 'printar'):
-        print(name)
