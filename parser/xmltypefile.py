@@ -1,7 +1,7 @@
 from validators import Validator
 
 
-class Construtor():
+class XMLTypeFactory():
     def criar(self, tipo):
         tiposArquivos = { 'Empenho': EmpenhoValidator, 'EmpenhoLiquidacao': EmpenhoLiquidacaoValidator,
          'EmpenhoLiquidacaoEstorno': EmpenhoLiquidacaoEstornoValidator, 

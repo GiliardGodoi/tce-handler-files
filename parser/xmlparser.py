@@ -1,9 +1,9 @@
 import xml.etree.ElementTree as ET
-from xmltypefile import Construtor
+from xmltypefile import XMLTypeFactory
 
 class XMLParser():
     def __init__(self):
-        self.construtor = Construtor()
+        self.construtor = XMLTypeFactory()
         self.xml_type = None
     
     def process_xml_file(self, xml_file):

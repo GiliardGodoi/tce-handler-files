@@ -1,11 +1,9 @@
 import re
-# from db import MongoStorage as DB
-# from db import FileJSONStorage as DB
-from db import FileCSVStorage as DB
+from db import StorageFactory
 
 class Validator():
     def __init__(self):
-        self.db = DB()
+        self.db = StorageFactory().get_storage('csv')
         self.collection_name = 'teste'
         self.intFields = []
         self.floatFields = []
