@@ -12,9 +12,10 @@ class Handler():
     
     def start(self):
         print('start at: '+self.startFolder)
-        self.file_handler(self.startFolder)
+        folder = os.path.join(os.getcwd(), self.startFolder)
+        self.file_handler(folder, 0)
 
-    def write(file, nivel):
+    def write(self, file, nivel):
         stdio.writeln('{}{}'.format(('  '*nivel),file))
 
     def file_handler(self, folder):
@@ -29,5 +30,5 @@ class Handler():
                 os.chdir(folder)
 
 if __name__ == "__main__":
-    h = Handler()
+    h = Handler('data')
     h.start()
