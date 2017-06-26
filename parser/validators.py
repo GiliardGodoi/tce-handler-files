@@ -24,7 +24,8 @@ class Validator():
         return novo
 
     def save(self,data):
-        self.db.save(data,self.collection_name)
+        nro = self.db.save(data,self.collection_name)
+        return nro
 
     def is_decimal(self,string): # testa por expressao regular se a string possui o foramto 0000.0000
         match_object = re.fullmatch(r'\d+\.?\d*',string)
