@@ -13,7 +13,7 @@ class Handler():
     def start(self):
         print('start at: '+self.startFolder)
         folder = os.path.join(os.getcwd(), self.startFolder)
-        self.file_handler(folder, 0)
+        self.file_handler(folder)
 
     def write(self, file, nivel):
         stdio.writeln('{}{}'.format(('  '*nivel),file))
