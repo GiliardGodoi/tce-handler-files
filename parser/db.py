@@ -77,10 +77,7 @@ class FileCSVStorage():
         if texto == '':
             return False
         else :
-            if csv.Sniffer().has_header(texto) :
-                return True
-            else:
-                return False
+            return True
 
     def _verifica_nome_arquivo(self, file_name):
         if not type(file_name) is str :
