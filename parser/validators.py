@@ -3,7 +3,7 @@ from db import StorageFactory
 
 class Validator():
     def __init__(self):
-        self.db = StorageFactory().get_storage('csv')
+        self.db = StorageFactory().get_storage('mongo')
         self.collection_name = 'teste'
         self.intFields = []
         self.floatFields = []
