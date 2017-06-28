@@ -161,7 +161,7 @@ class LicitacaoVencedorValidator(Validator):
 
     def valide(self,registro):
         novo_registro = super().valide(registro)
-        novo_registro['vlTotalVencedorLicitacao'] = self.multiplicar_valor_monetario(novo_registro["vlLicitacaoVencedorLicitacao"], novo_registro["nrQuantidadeVencedorLicitacao"])
+        # novo_registro['vlTotalVencedorLicitacao'] = self.multiplicar_valor_monetario(novo_registro["vlLicitacaoVencedorLicitacao"], novo_registro["nrQuantidadeVencedorLicitacao"])
         return novo_registro
     
     def multiplicar_valor_monetario(self, value1, value2):

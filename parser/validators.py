@@ -17,7 +17,6 @@ class Validator():
         for chave in list(registro.keys()):
             if type(registro[chave]) is str :
                 novo[chave] = registro[chave].strip()
-
         for chave in self.floatFields:
             if chave in registro :
                 novo[chave] = self._convert_to_decimal(registro[chave])
@@ -59,7 +58,8 @@ class Validator():
         #     return self._to_decimal(value)
         # else:
         #     return value
-        return self._to_decimal(value)
+        # return self._to_decimal(value)
+        return value.replace('.',',')
     
     def _ensure_schema_names(self, registro):
         for obj in self.schema :
