@@ -54,38 +54,46 @@ class FileCSVStorage():
         self.sniffer = csv.Sniffer()
 
     def save(self, data, file_name):
-        file_name += '.csv'
-        field_names = self.define_header(data)
-        nro = len(data)
-        csvfile =  open(file_name,'a+')
+        file_name = self._verifica_nome_arquivo(file_name)
+        result = 0
+        csvfile = open(file_name,'a+')
         try:
-            writer = csv.DictWriter(csvfile, fieldnames=field_names,dialect='mydialect')
-            testHeader = self.has_header(csvfile)
-            if testHeader : 
-                print('printando header')
+            header = self._define_header(data)
+            writer = csv.DictWriter(csvfile, fieldnames=header,dialect='mydialect')
+            if not self._has_header(csvfile) :
                 writer.writeheader()
             writer.writerows(data)
+            result = len(data)
         except Exception as error:
             raise error
         finally :
             csvfile.close()
-        return nro
-    
-    def has_header(self, csvfile):
+        return result
+                 
+    def _has_header(self, csvfile):
         csvfile.seek(0)
         texto = csvfile.read( (1024 * 2) )
         csvfile.seek(0)
-        if csv.Sniffer().has_header(texto) :
-            return True
-        else:
+        if texto == '':
             return False
+        else :
+            if csv.Sniffer().has_header(texto) :
+                return True
+            else:
+                return False
 
-    def define_header(self, data):
+    def _verifica_nome_arquivo(self, file_name):
+        if not type(file_name) is str :
+            raise AttributeError('file_name must be a string')
+        if not file_name.endswith('.csv') :
+            file_name += '.csv'
+        return file_name
+    
+    def _define_header(self, data):
         conjunto = set()
         if type(data) is list:
             for reg in data:
-                ls = list(reg.keys())
-                for e in ls:
+                for e in reg.keys():
                     conjunto.add(e)
             ls = list(conjunto)
             ls.sort()
@@ -93,7 +101,7 @@ class FileCSVStorage():
         elif type(data) is dict :
                 return list(data.keys())
 
-class SingletonMongo():
+class SingletonMongoStorage():
     def __init__(self):
         self.instance = None
 
@@ -123,7 +131,7 @@ class SingletonJSONStorage():
 class StorageFactory(object):
     def __init__(self):
         self.storages = {}
-        self.storages['mongo'] = SingletonMongo()
+        self.storages['mongo'] = SingletonMongoStorage()
         self.storages['csv'] = SingletonCSVStorage()
         self.storages['json'] = SingletonJSONStorage()
 
