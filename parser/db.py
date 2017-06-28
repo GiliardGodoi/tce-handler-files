@@ -50,7 +50,7 @@ class FileJSONStorage():
 
 class FileCSVStorage():
     def __init__(self):
-        csv.register_dialect('mydialect', delimiter=',',lineterminator='\n' )
+        csv.register_dialect('mydialect', delimiter='\t',lineterminator='\n' )
         self.sniffer = csv.Sniffer()
 
     def save(self, data, file_name):
@@ -58,11 +58,11 @@ class FileCSVStorage():
         result = 0
         csvfile = open(file_name,'a+')
         try:
-            header = self._define_header(data)
+            header,data_to_saved = self._define_header(data)
             writer = csv.DictWriter(csvfile, fieldnames=header,dialect='mydialect')
             if not self._has_header(csvfile) :
                 writer.writeheader()
-            writer.writerows(data)
+            writer.writerows(data_to_saved)
             result = len(data)
         except Exception as error:
             raise error
@@ -82,19 +82,23 @@ class FileCSVStorage():
     def _verifica_nome_arquivo(self, file_name):
         if not type(file_name) is str :
             raise AttributeError('file_name must be a string')
-        if not file_name.endswith('.csv') :
-            file_name += '.csv'
+        if not file_name.endswith('.tsv') :
+            file_name += '.tsv'
         return file_name
     
     def _define_header(self, data):
         conjunto = set()
+        outher = []
         if type(data) is list:
             for reg in data:
+                obj = {}
                 for e in reg.keys():
+                    obj[e] = str(reg[e])
                     conjunto.add(e)
+                outher.append(obj)
             ls = list(conjunto)
             ls.sort()
-            return ls
+            return ls,outher
         elif type(data) is dict :
                 return list(data.keys())
 
