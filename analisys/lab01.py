@@ -46,6 +46,7 @@ class ProcessData():
                 'vlPropostaItem' : '$vlPropostaItem',
                 'dtValidadeProposta' : '$dtValidadeProposta',
                 'dtPrazoEntregaPropostaLicitacao' : '$dtPrazoEntregaPropostaLicitacao',
+                'dtHomologacao' : '$dtHomologacao',
                 'nrQuantidadeVencedorLicitacao' : '$nrQuantidadeVencedorLicitacao',
                 'vlUnitarioVencedor' : '$vlLicitacaoVencedorLicitacao',
                 'nrClassificacao' : '$nrClassificacao',
