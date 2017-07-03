@@ -39,7 +39,7 @@ class ProcessData():
                 'vlAdquirido' : '$vlTotalAdquiridoLicitacao'
             }}
         }}
-        out = { '$out' : 'licitacaoAnual' }
+        out = { '$out' : 'resumoAnualLicitacoes' }
         pipeline = [match, group, out]
         db = self.get_db()
         cursor = db.rawLicitacao.aggregate(pipeline)
