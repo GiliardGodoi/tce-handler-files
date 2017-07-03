@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from functools import reduce
 import pprint
 
 class ProcessData():
@@ -13,15 +14,32 @@ class ProcessData():
 
     def process(self):
         db = self.get_db()
-        lsIdPessoa = db['rawLicitacao'].distinct('idPessoa')
+        # lsIdPessoa = db['rawLicitacao'].distinct('idPessoa')
+        lsIdPessoa = self.determinar_idPessoa_para_processamento()
         
+        print("Processamento ocorrendo para:\n",lsIdPessoa)
         for idPessoa in lsIdPessoa:
             cursor = self.process_item_licitacao(idPessoa)
             docs_updated = self.update_field(cursor)
             print('idPessoa', idPessoa)
             print('Documentos atualizados: ',docs_updated)
         
-    
+    def determinar_idPessoa_para_processamento(self):
+        db = self.get_db()
+        match = { "$match" : {'item' : {'$exists' : True }} }
+        project = {"$project" : {'_id' : 0, 'idPessoa' : 1} }
+        group = { "$group" :{ "_id" : "$idPessoa" } }
+        pipeline = [match, project, group]
+
+        cursor = db.rawLicitacao.aggregate(pipeline)
+        idPessoaJaProcessados = reduce(lambda a,x : a + [x['_id']] , list(cursor),[])
+
+        idPessoaFromRawLicitacao = db.rawLicitacao.distinct('idPessoa')
+
+        conjunto = set(idPessoaFromRawLicitacao) - set(idPessoaJaProcessados)
+
+        return list(conjunto)
+        
     def process_item_licitacao(self, idPessoa):
         match = { '$match' : { 'idPessoa' : idPessoa } }
         project = { '$project' : {'cdIBGE' : 0, 'idPessoa' : 0, 'nmEntidade' : 0,'nrAnoLicitacao' : 0, 'nrLicitacao': 0, 'dsModalidadeLicitacao': 0,'idUnidadeMedida' : 0 ,'idTipoEntregaProduto': 0,'DataReferencia' : 0, 'ultimoEnvioSIMAMNesteExercicio' : 0 }}
@@ -69,7 +87,6 @@ class ProcessData():
         docs_updated = []
         for doc in cursor:
             result = db.rawLicitacao.update_one({'idLicitacao' : doc['_id']}, { '$set' : {'item' : doc['item'], 'vlTotalAdquiridoLicitacao': doc['vlTotalAdquiridoLicitacao']} })
-            print(result.matched_count, result.modified_count)
             count += 1
             # docs_updated.append(result.raw_result)
         # return count, docs_updated
