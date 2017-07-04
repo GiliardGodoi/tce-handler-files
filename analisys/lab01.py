@@ -14,8 +14,8 @@ class ProcessData():
 
     def process(self):
         db = self.get_db()
-        # lsIdPessoa = db['rawLicitacao'].distinct('idPessoa')
-        lsIdPessoa = self.determinar_idPessoa_para_processamento()
+        lsIdPessoa = db['rawLicitacao'].distinct('idPessoa')
+        # lsIdPessoa = self.determinar_idPessoa_para_processamento()
         
         print("Processamento ocorrendo para:\n",lsIdPessoa)
         for idPessoa in lsIdPessoa:
@@ -47,27 +47,26 @@ class ProcessData():
             '_id' : '$idlicitacao',
             'item' : { '$push' : {
                 'fornecedor' : '$nmPessoa',
-                'nrDocumento' : '$nrDocumento',
+                'nrDocumentoFornecedor' : '$nrDocumento',
                 'nrLote' :'$nrLote',
                 'nrItem' : '$nrItem',
                 'nrQuantidade' : '$nrQuantidade',
                 'dsUnidadeMedida' : '$dsUnidadeMedida',
-                'vlMinimoUnitarioItem' : '$vlMinimoUnitarioItem',
-                'vlMinimoTotal' : '$vlMinimoTotal'
-                'vlMaximoUnitarioItem' '$vlMaximoUnitarioitem',
+                'vlMinimoUnitario' : '$vlMinimoUnitarioItem',
+                'vlMinimoTotal' : '$vlMinimoTotal',
+                'vlMaximoUnitario': '$vlMaximoUnitarioitem',
                 'vlMaximoTotal' : '$vlMaximoTotal',
                 'dsItem' : '$dsItem',
                 'dsFormaPagamento' : '$dsFormaPagamento',
-                'nrPrazoLimiteEntrega' : '$nrPrazoLimiteEntrega',
                 'dsTipoEntregaProduto': '$dsTipoEntregaProduto',
                 'nrQuantidadePropostaLicitacao' : '$nrQuantidadePropostaLicitacao',
                 'vlPropostaItem' : '$vlPropostaItem',
                 'dtValidadeProposta' : '$dtValidadeProposta',
                 'dtPrazoEntregaPropostaLicitacao' : '$dtPrazoEntregaPropostaLicitacao',
-                'dtHomologacao' : '$dtHomologacao',
-                'nrQuantidadeVencedorLicitacao' : '$nrQuantidadeVencedorLicitacao',
-                'vlUnitarioVencedor' : '$vlLicitacaoVencedorLicitacao',
                 'nrClassificacao' : '$nrClassificacao',
+                'dtHomologacao' : '$dtHomologacao',
+                'nrQuantidadeVencedor' : '$nrQuantidadeVencedorLicitacao',
+                'vlUnitarioVencedor' : '$vlLicitacaoVencedorLicitacao',
                 'vlTotalVencedor' : '$vlTotalVencedorLicitacao'
             }},
             'vlTotalAdquiridoLicitacao' : {
