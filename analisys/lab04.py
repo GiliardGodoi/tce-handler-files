@@ -11,9 +11,20 @@ class ProcessData():
         return self._db
     
     def process(self):
-        cdMunicipios = self.get_db().rawLicitacao.distinct('cdIBGE')
-        for cod in cdMunicipios :
+        cdIBGE = self.determinar_cdIBGE_pesquisaveis()
+        print("Realizando pesquisa para:\n",cdIBGE)
+        for cod in cdIBGE :
             self.agrupar_fornecedor_por_cidade(cod) 
+    
+    def determinar_cdIBGE_pesquisaveis(self):
+        db = self.get_db()
+        lst = db.rawLicitacao.distinct('cdIBGE')
+        cj_cdIBGE_rawLicitacao = set(lst)
+        lst = db.listaFornecedores.distinct('participacoes.cdIBGE')
+        cj_cdIBGE_listaFornecedores = set(lst)
+        cj_cdIBGES = cj_cdIBGE_rawLicitacao - cj_cdIBGE_listaFornecedores
+        
+        return list(cj_cdIBGES)
 
     def agrupar_fornecedor_por_cidade(self,cdIBGE):
         match = {"$match" : {'cdIBGE' : cdIBGE}}
@@ -21,10 +32,13 @@ class ProcessData():
             "_id" : "$nrDocumento",
             "nmFornecedor" : {"$addToSet" : {
                 "nome" : "$nmPessoa",
+                "nrDocumento" : "$nrDocumento"
             }},
             "nrQuantidadeProcedimento" : { "$sum" : 1},
             "vlTotalAdquiridoParticipante" : {"$sum": "$vlTotalVencedorLicitacao" },
             "participacoes" : { "$addToSet" : {
+                "cdIBGE" : "$cdIBGE",
+                "idPessoa" : "$idPessoa",
                 "idlicitacao" : "$idlicitacao",
                 "nrLicitacao" : "$nrLicitacao",
                 "nrAnoLicitacao" : "$nrAnoLicitacao",
