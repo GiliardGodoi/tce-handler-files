@@ -138,7 +138,8 @@ class LicitacaoValidator(Validator):
                     "vlPropostaItem",
                     "nrQuantidadeVencedorLicitacao",
                     "vlLicitacaoVencedorLicitacao" ]
-        self.schema = [{ 'old' : 'nranoEditalOrigem' , 'new' : 'nrAnoEditalOrigem'}]
+        self.schema = [{ 'old' : 'nranoEditalOrigem' , 'new' : 'nrAnoEditalOrigem'},
+                       {'old' : 'idPessoa', 'new' : 'cdEntidade' } ]
         self.collection_name = 'rawLicitacao'
     
     def valide(self, registro):
@@ -158,9 +159,11 @@ class LicitacaoVencedorValidator(Validator):
         "vlMaximoTotal", "nrPrazoLimiteEntrega", "nrQuantidadePropostaLicitacao", "vlPropostaItem",
         "nrQuantidadeVencedorLicitacao", "vlLicitacaoVencedorLicitacao"]
         self.collection_name = 'rawLicitacaoVencedor'
+        self.schema = [{'old' : 'idPessoa', 'new' : 'cdEntidade' }, {'old' : 'nmPessoa' , 'new' : 'nmFornecedor'}]
 
     def valide(self,registro):
         novo_registro = super().valide(registro)
+        novo_registro = super()._ensure_schema_names(novo_registro)
         novo_registro['vlTotalVencedorLicitacao'] = self.multiplicar_valor_monetario(novo_registro["vlLicitacaoVencedorLicitacao"], novo_registro["nrQuantidadeVencedorLicitacao"])
         return novo_registro
     
