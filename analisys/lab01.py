@@ -1,8 +1,35 @@
+# -*- coding: utf-8 -*-
 from pymongo import MongoClient
 from functools import reduce
 import pprint
 
 class ProcessData():
+    '''
+        Rotina para preparação dos dados 
+        rota: licitacao/:idLicitacao
+        modelo de dados:
+        {
+            cdIBGE : <string>,
+            nmMunicipio : <string>,
+            nmEntidade : <string>,
+            cdEntidade : <string>,
+            idLicitacao :<string>,
+            dsModalidade : <string>,
+            nrLicitacao : <string>,
+            nrAnoLicitacao : <string>,
+            dtEdital : <string>,
+            dtAbertura : <string>,
+            vlLicitacao : <string>,
+            dsNaturezaLicitacao : <string>,
+            dsAvaliacaoLicitacao : <string>,
+            dsClassificacaoObjeto : <string>,
+            dsRegimeExecucao : <string>,
+            dsObjeto : <string>,
+            dsClausulaProrrogacao : <string>,
+            item : <array>,
+            vlTotalAdquiridoLicitacao : <double>
+        }
+    '''
     def __init__(self):
         self._db = None
 
@@ -14,15 +41,14 @@ class ProcessData():
 
     def process(self):
         db = self.get_db()
-        lsIdPessoa = db['rawLicitacao'].distinct('idPessoa')
-        # lsIdPessoa = self.determinar_idPessoa_para_processamento()
+        lstCdEntidade = db['rawLicitacao'].distinct('cdEntidade')
+        # lstCdEntidade = self.determinar_idPessoa_para_processamento()
         
-        print("Processamento ocorrendo para:\n",lsIdPessoa)
-        for idPessoa in lsIdPessoa:
-            cursor = self.process_item_licitacao(idPessoa)
+        print("Processamento ocorrendo para:\n",lstCdEntidade)
+        for cod in lstCdEntidade:
+            cursor = self.process_item_licitacao(cod)
             docs_updated = self.update_field(cursor)
-            print('idPessoa', idPessoa)
-            print('Documentos atualizados: ',docs_updated)
+            print('cdEntidade: ', cod, 'Documentos atualizados: ',docs_updated)
         
     def determinar_idPessoa_para_processamento(self):
         db = self.get_db()
@@ -40,13 +66,13 @@ class ProcessData():
 
         return list(conjunto)
         
-    def process_item_licitacao(self, idPessoa):
-        match = { '$match' : { 'idPessoa' : idPessoa } }
-        project = { '$project' : {'cdIBGE' : 0, 'idPessoa' : 0, 'nmEntidade' : 0,'nrAnoLicitacao' : 0, 'nrLicitacao': 0, 'dsModalidadeLicitacao': 0,'idUnidadeMedida' : 0 ,'idTipoEntregaProduto': 0,'DataReferencia' : 0, 'ultimoEnvioSIMAMNesteExercicio' : 0 }}
+    def process_item_licitacao(self, cdEntidade):
+        match = { '$match' : { 'cdEntidade' : cdEntidade } }
+        project = { '$project' : {'cdIBGE' : 0, 'cdEntidade' : 0, 'nmEntidade' : 0,'nrAnoLicitacao' : 0, 'nrLicitacao': 0, 'dsModalidadeLicitacao': 0,'idUnidadeMedida' : 0 ,'idTipoEntregaProduto': 0,'DataReferencia' : 0, 'ultimoEnvioSIMAMNesteExercicio' : 0 }}
         group = { '$group' : {
             '_id' : '$idlicitacao',
             'item' : { '$push' : {
-                'fornecedor' : '$nmPessoa',
+                'nmFornecedor' : '$nmFornecedor',
                 'nrDocumentoFornecedor' : '$nrDocumento',
                 'nrLote' :'$nrLote',
                 'nrItem' : '$nrItem',
