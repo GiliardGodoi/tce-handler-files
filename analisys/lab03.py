@@ -13,58 +13,54 @@ class ProcessData():
 
     def process(self):
         db = self.get_db()
-        lsEntidade = db['rawLicitacao'].distinct('idPessoa')
-        print('Executando para as entidades:\n',lsEntidade)
-        for entidade in lsEntidade:
+        lstCodEntidade = db['rawLicitacao'].distinct('cdEntidade')
+        print('Executando para as entidades:\n',lstCodEntidade)
+        for entidade in lstCodEntidade:
             cursor = self.agrupar_licitacao_anual_por_modalidade(entidade)
-            docs_inserted = self.inserir_collecao_resumo_licitacao(cursor)
+            aux = self.informacao_municipio(entidade)
+            self.inserir_collecao_resumo_licitacao(aux,cursor)
 
             
-    def inserir_collecao_resumo_licitacao(self, cursor):
-        if not cursor:
-            raise AttributeError('parametro invalido')
-        db = self.get_db()
-        count = 0
+    def inserir_collecao_resumo_licitacao(self,aux, cursor):
+        if not (cursor and aux):
+            raise AttributeError('cursor ...')
+        obj = {}
+        obj['nmMunicipio'] = aux['nmMunicipio']
+        obj['cdIBGE'] = aux['cdIBGE']
+        
+        obj['sinopse'] = []
         for doc in cursor:
-            doc['cdIBGE'] = doc['_id']['cdIBGE']
-            doc['cdEntidade'] = doc['_id']['cdEntidade']
-            doc['nrAnoLicitacao'] = doc['_id']['nrAnoLicitacao']
-            doc['dsModalidadeLicitacao'] = doc['_id']['dsModalidadeLicitacao']
-            doc['_id'] = ObjectId()
-            result = db['resumoLicitacaoAnual'].insert_one(doc)
-            if result:
-                count += 1
+            sinopse = {}
+            obj['nrAnoLicitacao'] = doc['_id']['nrAnoLicitacao']
+            sinopse['dsModalidadeLicitacao'] = doc['_id']['dsModalidadeLicitacao']
+            sinopse["nmEntidade"] = aux["nmEntidade"]
+            sinopse['nrQuantidadeProcedimento'] = doc['nrQuantidadeProcedimento'],
+            sinopse['vlAnualTotalAdquirido'] = doc['vlAnualTotalAdquirido'],
+            sinopse['vlAnualTotalLicitado'] = doc['vlAnualTotalLicitado'],
+            obj['sinopse'].append(sinopse)
+        db = self.get_db()
+        db.sinopseLicitacao.insert_one(obj)
 
-        return count
+        
+    
+    def informacao_municipio(self, cdEntidade):
+        db = self.get_db()
+        aux = db.rawLicitacao.find_one({"cdEntidade" : cdEntidade}, {"_id" : 0, "nmMunicipio" : 1, "nmEntidade" : 1, "cdIBGE" : 1})
+        return aux
 
     def agrupar_licitacao_anual_por_modalidade(self, cdEntidade):
-        match = { '$match' : {'idPessoa' : cdEntidade}}
+        match = { '$match' : {'cdEntidade' : cdEntidade}}
         group = { '$group' : { 
             '_id' : {
-                'cdIBGE' : '$cdIBGE', 
-                'cdEntidade' : '$idPessoa',
                 'nrAnoLicitacao' : '$nrAnoLicitacao',
                 'dsModalidadeLicitacao' : '$dsModalidadeLicitacao' 
-                },
-            "nmMunicipio" : { "$first" : "$nmMunicipio"},
-            'nmEntidade' : {"$first" : "$nmEntidade"},
+            },
             'nrQuantidadeProcedimento' : {'$sum' : 1},
-            'vlAnualTotalAdquirido' : { '$sum' : '$vlTotalAdquiridoLicitacao'},
-            'vlAnualTotalLicitado' : { '$sum' : '$vlLicitacao'},
-            'procedimento' : { '$push' : {
-                'idlicitacao' : '$idLicitacao',
-                'dsModalidade' : '$dsModalidadeLicitacao',
-                'nrAnoLicitacao' : '$nrAnoLicitacao',
-                'nrLicitacao' : '$nrLicitacao',
-                'dsObjeto' : '$dsObjeto',
-                'vlLicitacao' : '$vlLicitacao',
-                'vlAdquirido' : '$vlTotalAdquiridoLicitacao'
-            }}
+            'vlAnualTotalAdquirido' : { '$sum' : '$vlTotalAdquiridoLicitacao' },
+            'vlAnualTotalLicitado' : { '$sum' : '$vlLicitacao' },
         }}
-        
-        pipeline = [match, group]
         db = self.get_db()
-        print('executando pipeline... ',cdEntidade)
+        pipeline = [match, group]
         cursor = db.rawLicitacao.aggregate(pipeline)
         return cursor
 
