@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+import time
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-import time
+
 class ProcessData():
     '''
         Rotina para preparação dos dados
@@ -9,7 +10,7 @@ class ProcessData():
         rankingFornecedor/
         
         MÉTODO: GET
-        
+
         PARÂMETROS:
         ?cdIBGE=[cdIBGE]&nrAno=[nrAno]&typeRanking=[tipoRanking]&limit=[nrlimit]&sort=[asc || desc]
         tipoRanking = valor || presenca
@@ -58,13 +59,13 @@ class ProcessData():
         return db.rawLicitacaoVencedor.distinct('cdIBGE')
     
     def determinar_pipeline(self,cdIBGE = None, nrAno = None, typeRanking = None, limit = None, sortType = None ):
+        ''' Constroi o pipeline com base nos parametros passados '''
         if not cdIBGE:
             raise AttributeError('cdIBGE deve ser informado')
         if not nrAno:
             raise AttributeError('nrAno deve ser informado')
         # if not typeRanking in ['valor', 'presenca'] :
         #     raise AttributeError('typeRanking deve ser valor ou presenca')
-        
         match = {"$match" : {"cdIBGE" : cdIBGE, "nrAnoLicitacao" : nrAno} }
         group = { "$group" : {
             "_id" : {"nrDocumento" : "$nrDocumento","nmFornecedor" : "$nmFornecedor"},
