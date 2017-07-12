@@ -16,10 +16,27 @@ class ProcessData():
         cdIBGE=[cdIBGE]&nrAno=[nrAno]
         
         OBJETIVO:
-        Fornecer a quantidade de procedimentos realizados durante um determinado ano. Fornecer, ainda, dados sobre
+        Fornecer a quantidade de procedimentos realizados durante um determinado ano. 
+        Fornecer, ainda, dados sobre
         valor total licitado e o valor total efetivamente adquirido. Atenção para essa diferenciação.
 
         MODELO DE DADOS
+        <array>
+        [{
+            cdIBGE : <string>,
+            nmMunicipio : <string>,
+            nmEntidade : <string>,
+            nrAnoLicitacao : <string>,
+            cdEntidade :<string>,
+            sinopse : [
+                {
+                    dsModalidadeLicitacao : <string>,
+                    vlAnualTotalLicitado : <string>,
+                    vlAnualTotalAdquirido : <string>,
+                }
+            ]
+        }
+        , ... ]
     '''
     def __init__(self):
         self._db = None

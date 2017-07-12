@@ -5,9 +5,14 @@ import pprint
 
 class ProcessData():
     '''
-        Rotina para preparação dos dados 
-        rota: licitacao/:idLicitacao
-        modelo de dados:
+        ROTINA PARA PREPARANÇÃO DOS DADOS
+        ROTA:
+        licitacao/:idLicitacao
+
+        OBJETIVO: Acrescenta o campo item nos documentos da coleção rawLicitacao, a partir dos dados 
+        da coleção rawLicitacaoVencedor.
+
+        MODELO DE DADOS:
         {
             cdIBGE : <string>,
             nmMunicipio : <string>,
@@ -29,6 +34,33 @@ class ProcessData():
             item : <array>,
             vlTotalAdquiridoLicitacao : <double>
         }
+
+        item : [
+            {
+                'nmFornecedor' : <string>,
+                'nrDocumentoFornecedor' : <string>,
+                'nrLote' : <string>,
+                'nrItem' : <string>,
+                'nrQuantidade' : <double>,
+                'dsUnidadeMedida' : <string>,
+                'vlMinimoUnitario' : <double>,
+                'vlMinimoTotal' : <double>,
+                'vlMaximoUnitario': <double>,
+                'vlMaximoTotal' : <double>,
+                'dsItem' : <string>,
+                'dsFormaPagamento' : <string>,
+                'dsTipoEntregaProduto': <string>,
+                'nrQuantidadePropostaLicitacao' : 
+                'vlPropostaItem' : <double>,
+                'dtValidadeProposta' : <string>,
+                'dtPrazoEntregaPropostaLicitacao' : <string>,
+                'nrClassificacao' : <string>,
+                'dtHomologacao' : <string>,
+                'nrQuantidadeVencedor' : <double>,
+                'vlUnitarioVencedor' : <double>,
+                'vlTotalVencedor' : <double>
+            }
+        ]
     '''
     def __init__(self):
         self._db = None

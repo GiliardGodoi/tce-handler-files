@@ -5,9 +5,23 @@ from pymongo import MongoClient
 
 class ProcessData():
     '''
-        ROTINA PREPARAÇÃO DOS DADOS
-        rota
-            modalidadePorTipoAvaliacao/:cdIBGE&:nrAno
+        ROTINA PARA PREPARAÇÃO DOS DADOS
+
+        CAMINHO ROTA
+        licitacao/:idLicitacao
+                
+        OBJETIVO: Acrescenta o campo nrTotalParticipante e lsParticipante nos documentos da coleção raw Licitacao
+        a partir dos dados da coleção rawLicitacaoParticipante.
+        
+        MODELO DE DADOS
+        {
+            "nrTotalParticipante" : <inteiro>,
+            "lsParticipante" : {
+                "nmFornecedor" : <string>,
+                "sgDocumentoForncedor" : <string>,
+                "nrDocumentoFornecedor" : <string>
+            } 
+        }
     '''
     def __init__(self):
         self._db = None
