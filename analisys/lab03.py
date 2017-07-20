@@ -48,12 +48,12 @@ class ProcessData():
         return self._db
 
     def execute(self):
-        lstCodEntidade = self.determinar_entidades_para_execucao()
-        anos = ['2013', '2014', '2015', '2016']
-        print('Executando para as entidades:\n',lstCodEntidade)
-        for entidade in lstCodEntidade:
+        ls_cod_entidade = self.determinar_entidades_para_execucao()
+        anos = ['2013', '2014', '2015', '2016'] 
+        print('Executando para as entidades:\n',ls_cod_entidade)
+        for entidade in ls_cod_entidade:
             for ano in anos:
-                pipe = self.determinar_pipeline(cdEntidade=entidade,nrAno=ano)
+                pipe = self.determinar_pipeline(cd_entidade=entidade,nr_ano=ano)
                 cursor = self.executar_consulta(pipe)
                 aux = self.complemento_informacao_entidade(cd_entidade=entidade,nr_ano=ano)
                 nro = self.salvar_resultado(cursor=cursor,doc=aux)
@@ -64,9 +64,9 @@ class ProcessData():
         ''' determinar os codigos das entidades que serao processadas '''
         return self.get_db()['rawLicitacao'].distinct('cdEntidade')
 
-    def determinar_pipeline(self, cdEntidade = None, nrAno = None):
+    def determinar_pipeline(self, cd_entidade = None, nr_ano = None):
         ''' Controi o pipeline de acordo com os dados recebeidos '''
-        match = { '$match' : {'cdEntidade' : cdEntidade, 'nrAnoLicitacao' : nrAno}}
+        match = { '$match' : {'cdEntidade' : cd_entidade, 'nrAnoLicitacao' : nr_ano}}
         group = { '$group' : { 
             '_id' : '$dsModalidadeLicitacao',
             'vlAnualTotalAdquirido' : { '$sum' : '$vlTotalAdquiridoLicitacao' },
@@ -95,7 +95,7 @@ class ProcessData():
     def salvar_resultado(self, cursor,doc=None):
         if not doc:
             return 0
-        DB = self.get_db()
+        db = self.get_db()
         doc['_id'] = ObjectId()
         doc['sinopse'] = []
         count = 0
@@ -104,7 +104,7 @@ class ProcessData():
             del item['_id']
             doc['sinopse'].append(item)
             count += 1
-        DB.sinopseLicitacao.insert_one(doc)
+        db.sinopseLicitacao.insert_one(doc)
         return count
 
 
