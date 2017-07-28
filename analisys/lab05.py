@@ -93,10 +93,10 @@ class ProcessData():
             obj['_id'] = ObjectId()
             obj['cdIBGE'] = cdIBGE
             obj['nrAno'] = nrAno
-            obj['fornecedor'] = {}
-            obj['fornecedor']['nmFornecedor'] = doc['_id']['nmFornecedor']
-            obj['fornecedor']['nrDocumento'] = doc['_id']['nrDocumento']
-            obj['fornecedor']['vlContratado'] = doc['vlContratado']
+            
+            obj['nmFornecedor'] = doc['_id']['nmFornecedor']
+            obj['nrDocumento'] = doc['_id']['nrDocumento']
+            obj['vlContratado'] = doc['vlContratado']
             db[output_collection].insert_one(obj)
 
 
