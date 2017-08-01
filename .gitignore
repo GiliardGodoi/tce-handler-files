@@ -1,4 +1,7 @@
+#Ignorando meus repositórios de dados
 data/
+geodata/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
